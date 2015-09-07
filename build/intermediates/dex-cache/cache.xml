@@ -9,6 +9,20 @@
         <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/support-annotations-22.0.0-581b136a6474e5990797f3b093487a89a7bbdfd9.jar" />
     </item>
     <item
+        jar="/Users/jdu/github/AlphaBearHack/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
+        <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-f2f9542e22118abac723f1f12ccc10f5f64bbec7.jar" />
+    </item>
+    <item
+        jar="/Users/jdu/github/AlphaBearHack/app/libs/OCR.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f5cea6758fc10424fc66406659f232d9317b0f0b">
+        <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/OCR-574a245cd6fee7390dfdea771164f98c493c5119.jar" />
+    </item>
+    <item
         jar="/Users/jdu/github/AlphaBearHack/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.0.0/jars/libs/internal_impl-22.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -21,13 +35,6 @@
         revision="21.1.2"
         sha1="4e86306289ace4aa0cfec44a05ed2b410d36989d">
         <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-b7af11720ecd82aab15c33f223a311c98df2666b.jar" />
-    </item>
-    <item
-        jar="/Users/jdu/github/AlphaBearHack/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/jars/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
-        <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-f2f9542e22118abac723f1f12ccc10f5f64bbec7.jar" />
     </item>
 
 </items>

@@ -1,34 +1,20 @@
 package jotaro.alphabearhack;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
+
+;
 
 /**
  * Creates the head layer view which is displayed directly on window manager.
@@ -71,18 +57,19 @@ public class HeadLayer extends View {
         windowManager.addView(b, params);
         b.setOnClickListener(
                 new OnClickListener() {
-                     @Override
-                     public void onClick(View view) {
-                         System.out.println("Clicked");
-                         File folder = new  File("/sdcard/Pictures/Screenshots");
-                         System.out.println(folder.isDirectory());
-                         File image = folder.listFiles()[folder.listFiles().length-1];
-                         if(image.exists()){
-                             Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
-
-                         }
-                     }
-                 }
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("Clicked");
+                        File folder = new File("/sdcard/Pictures/Screenshots");
+                        System.out.println(folder.isDirectory());
+                        File image = folder.listFiles()[folder.listFiles().length - 1];
+                        if (image.exists()) {
+                            Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
+                            System.out.println(image.getName());
+                            System.out.println(myBitmap.getPixel(0,0));
+                        }
+                    }
+                }
         );
 
         frameLayout.setOnTouchListener(

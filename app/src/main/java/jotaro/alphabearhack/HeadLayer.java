@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import com.googlecode.tesseract.android.TessBaseAPI;
+
 import java.io.File;
 
 ;
@@ -66,7 +68,9 @@ public class HeadLayer extends View {
                         if (image.exists()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
                             System.out.println(image.getName());
-                            System.out.println(myBitmap.getPixel(0,0));
+                            System.out.println(myBitmap.getPixel(0, 0));
+                            TessBaseAPI baseApi = new TessBaseAPI();
+
                         }
                     }
                 }

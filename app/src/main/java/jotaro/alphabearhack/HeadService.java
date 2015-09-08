@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+
 /**
  * Foreground service. It creates a head view.
  * The pending intent allows to go back to the settings activity.
@@ -37,7 +39,11 @@ public class HeadService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
 
-        headLayer = new HeadLayer(this);
+        try {
+            headLayer = new HeadLayer(this);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         startForeground(FOREGROUND_ID, notification);
         return START_STICKY;
     }

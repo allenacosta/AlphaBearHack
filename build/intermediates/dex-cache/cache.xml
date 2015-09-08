@@ -2,6 +2,13 @@
 <items version="2" >
 
     <item
+        jar="/Users/jdu/github/AlphaBearHack/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
+        <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-f2f9542e22118abac723f1f12ccc10f5f64bbec7.jar" />
+    </item>
+    <item
         jar="/Users/jdu/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -23,11 +30,11 @@
         <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-b7af11720ecd82aab15c33f223a311c98df2666b.jar" />
     </item>
     <item
-        jar="/Users/jdu/github/AlphaBearHack/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/jars/classes.jar"
+        jar="/Users/jdu/github/AlphaBearHack/app/build/intermediates/exploded-aar/AlphaBearHack.libraries/tess-two/unspecified/jars/classes.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
-        <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-f2f9542e22118abac723f1f12ccc10f5f64bbec7.jar" />
+        sha1="5b498e07af9b9ac6c940eb742cef6aab0587ae37">
+        <dex dex="/Users/jdu/github/AlphaBearHack/app/build/intermediates/pre-dexed/debug/classes-27ddb39a3c3af75d6c6f18246c3fcf71ee2fc413.jar" />
     </item>
 
 </items>

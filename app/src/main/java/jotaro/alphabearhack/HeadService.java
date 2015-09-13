@@ -51,7 +51,6 @@ public class HeadService extends Service {
     @Override
     public void onDestroy() {
         Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
-
         headLayer.destroy();
         stopForeground(true);
     }

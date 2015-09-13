@@ -3,14 +3,18 @@ package jotaro.alphabearhack;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -39,79 +43,155 @@ public class HeadLayer extends View {
     private int blackColor = -16777216;
     private int tileSize = 0;
     public Button b;
+    public EditText et;
     private final Scanner dictionary = new Scanner(new File("/sdcard/AlphaBearHack/words.txt"));
     private TessBaseAPI baseApi = new TessBaseAPI();
-
+    private AlphaBearSolver abs;
+    private WindowManager.LayoutParams params2;
     public HeadLayer(Context context) throws FileNotFoundException {
         super(context);
-
         this.context = context;
-
         createHeadView();
     }
+    private boolean textAdded;
+    private LinearLayout ll;
 
     /**
      * Creates head view and adds it to the window manager.
      */
     private void createHeadView() throws FileNotFoundException {
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                         | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+                PixelFormat.TRANSPARENT);
         params.gravity = Gravity.TOP | Gravity.LEFT;
+        params2 = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                370,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSPARENT);
+        params2.gravity = Gravity.TOP | Gravity.LEFT;
 
         frameLayout = new FrameLayout(context);
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         //windowManager.addView(frameLayout, params);
         b = new Button(context);
+        b.setGravity(Gravity.TOP);
         b.setText("Click to get Answer");
-        windowManager.addView(b, params);
+
+        Button clearButton = new Button(context);
+        clearButton.setText("RESET");
+
+        final EditText textfield = new EditText(context);
+        textfield.setTextColor(Color.RED);
+        textfield.setGravity(Gravity.BOTTOM);
+        ll = new LinearLayout(context);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.addView(b);
+        ll.addView(clearButton);
+        b = ((Button) ll.getChildAt(0));
+        clearButton = ((Button) ll.getChildAt(1));
+
+        windowManager.addView(ll, params);
+//        windowManager.addView(textfield, params2);
         String DATA_PATH = "/sdcard/AlphaBearHack";
         baseApi.init(DATA_PATH, "eng");
+        abs = new AlphaBearSolver(dictionary, b);
+        abs.run();
+        textAdded = false;
+        clearButton.setOnClickListener(
+                new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Removing textfield");
+                ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).removeView(textfield);
+                textAdded = false;
+            }
+        });
 
         b.setOnClickListener(
-            new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    System.out.println("Clicked");
-                    File folder = new File("/sdcard/Pictures/Screenshots");
-                    System.out.println(folder.isDirectory());
-                    File image = folder.listFiles()[folder.listFiles().length - 1];
-                    if (image.exists()) {
-                        Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
-                        System.out.println(image.getName());
-                        int width = myBitmap.getWidth();
-                        int height = myBitmap.getHeight();
-                        Bitmap cropped = Bitmap.createBitmap(myBitmap, 0, (height - width) / 2, width, width);
-                        tileSize = getTileSize(cropped, width);
-                        System.out.println("tileSize: " + tileSize);
-                        binarize(cropped, dataColor);
-                        System.out.println("Done binarization");
-                        ImagePiece[][] grid = divideImage(cropped, width, baseApi);
-                        AlphaBearSolver abs = new AlphaBearSolver(dictionary);
-                        ArrayList<String> results = abs.getWords(printLetters(grid));
-                        displayFirstFive(results, view);
+                new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("Clicked");
+                        File folder = new File("/sdcard/Pictures/Screenshots");
+                        System.out.println(folder.isDirectory());
+                        File image = folder.listFiles()[folder.listFiles().length - 1];
+                        if (image.exists()) {
+                            Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
+                            if (myBitmap != null) {
+                                System.out.println(image.getName());
+                                int width = myBitmap.getWidth();
+                                int height = myBitmap.getHeight();
+                                Bitmap cropped = Bitmap.createBitmap(myBitmap, 0, (height - width) / 2, width, width);
+                                tileSize = getTileSize(cropped, width);
+                                System.out.println("tileSize: " + tileSize);
+                                binarize(cropped, dataColor);
+                                System.out.println("Done binarization");
+                                ImagePiece[][] grid = divideImage(cropped, width, baseApi);
+                                try {
+                                    //printGrid(grid);
+                                    outputImage(cropped, "bi.png");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println("Done divideImage");
+                                String rawLetters = printLetters(grid);
+                                if(!textAdded){
+                                    windowManager.addView(textfield, params2);
+                                    textAdded = true;
+                                    textfield.setOnKeyListener(new OnKeyListener() {
+                                        @Override
+                                        public boolean onKey(View v, int keyCode, KeyEvent event) {
+                                            if(keyCode == KeyEvent.KEYCODE_ENTER){
+                                                textfield.setText(textfield.getText().toString().replace("\n",""));
+                                                displayFirstFive(abs.getWords(textfield.getText().toString().replace("\n","")));
+                                            }
+                                            return false;
+                                        }
+                                    });
+                                }
+                                textfield.setText(rawLetters);
+                                if (isAlpha(rawLetters)) {
+                                    displayFirstFive(abs.getWords(rawLetters));
+                                    image.delete();
+                                }
+                            } else {
+                                b.setText("image not ready");
+                            }
+                        }
                     }
-                }
-            }
-        );
+                });
 
         frameLayout.setOnTouchListener(
-                new OnTouchListener() {
-                    public boolean onTouch(View v, MotionEvent me) {
-                        System.out.println("Clicked");
-                        return true;
-                    }
+            new OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent me) {
+                System.out.println("Clicked");
+                return true;
                 }
+            }
         );
 
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         // Here is the place where you can inject whatever layout you want.
         layoutInflater.inflate(R.layout.head, frameLayout);
+    }
+
+    public boolean isAlpha(String name) {
+        char[] chars = name.toCharArray();
+
+        for (char c : chars) {
+            if(!Character.isLetter(c)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -178,13 +258,20 @@ public class HeadLayer extends View {
         int blackColor = -16777216;
         for(int i=0; i<img.getWidth(); i++) {
             for(int j=0; j<img.getHeight(); j++) {
-                if(img.getPixel(i, j) != dataColor){
+                if(!withInColorRange(img.getPixel(i, j))){
                     img.setPixel(i, j, whiteColor);
-                }else {
+                } else {
                     img.setPixel(i, j, blackColor);
                 }
             }
         }
+    }
+
+    public boolean withInColorRange(int inputColor){
+        boolean r = Color.red(inputColor) >= 210 && Color.red(inputColor) <= 235;
+        boolean b = Color.green(inputColor) >= 245 && Color.green(inputColor) <= 260;
+        boolean g = Color.blue(inputColor) >= 210 && Color.blue(inputColor) <= 235;
+        return r && b && g;
     }
 
     public ImagePiece[][] divideImage(Bitmap img, int imageSize, TessBaseAPI scanner){
@@ -193,6 +280,7 @@ public class HeadLayer extends View {
             for(int x=0; x<tileSize; x++) {
                 try {
                     grid[x][y] = new ImagePiece(img, x, y, (double)imageSize/tileSize, scanner);
+                    grid[x][y].run();
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Alternating tile size");
@@ -218,7 +306,7 @@ public class HeadLayer extends View {
     }
 
     // Takes a list of String, and print the first five elements in there
-    public void displayFirstFive(ArrayList<String> results, View view){
+    public void displayFirstFive(ArrayList<String> results){
         String answer = "";
         int size = 0;
         if(results.size() > 5){
@@ -226,10 +314,14 @@ public class HeadLayer extends View {
         } else {
             size = results.size();
         }
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < size-1; i++){
             answer += results.get(i) + ", ";
         }
-        b.setText(answer += results.get(size-1));
+        if(results.size() > 0){
+            b.setText(answer += results.get(size - 1));
+        } else {
+            b.setText("NO WORD FOUND");
+        }
     }
 
     public void printGrid(ImagePiece[][] grid) throws IOException{
